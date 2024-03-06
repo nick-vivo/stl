@@ -1,6 +1,5 @@
 #ifndef __Tree_PrintTree_Module__
 #define __Tree_PrintTree_Module__
-
 /**
  * @file src/Tree/PrintTree.cc, lib - Tree.
  * 
@@ -19,10 +18,10 @@
 #include "Tools.cc"
 
 
+
 /**
- * @brief Функции для вывода различных деревьев.
- * 
- * Используется рекурсия вида: сначала левые значения, потом правые.
+ * @brief - Содержит класс бинарного дерева, класс узлов Node, а также функции вывода 
+ * деревьев, если подключили библиотеку Tree
  */
 namespace Tree
 {

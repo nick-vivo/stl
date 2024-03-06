@@ -1,6 +1,5 @@
 #ifndef __Tree_Node_Class__
 #define __Tree_Node_Class__
-
 /**
  * @file src/Tree/Node, lib - Tree.
  * 
@@ -11,8 +10,10 @@
  */
 
 
+
 /**
- * @brief Классы для узлов деревьев.
+ * @brief - Содержит класс бинарного дерева, класс узлов Node, а также функции вывода 
+ * деревьев, если подключили библиотеку Tree
  */
 namespace Tree
 {

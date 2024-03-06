@@ -1,6 +1,5 @@
 #ifndef __Tools_Module__
 #define __Tools_Module__
-
 /**
  * @file src/Tree/Tools.cc, lib - Tree.
  * 
