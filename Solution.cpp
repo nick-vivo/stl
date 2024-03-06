@@ -4,21 +4,18 @@
 
 int main() 
 {   
-    Tree::Binary<int> tree = {1, 2, 3, 4, 5, 6, 7};
+    Tree::Binary<int> tree1 = {1, 2, 3, 4, 5, 6, 7};
+    Tree::Binary<int> tree2 = {1, 2, 3};
     
-    tree.balance();
+    tree1 -= tree2;
+
+    tree1.balance();
 
 
     std::cout << "\n";
 
-    Tree::Node<int> *ptr = tree.cloneNodes();
-
-    Tree::printTree(ptr);
-
-    TreeBinary::deleteNodes(ptr);
-
-    Tree::print(tree);
-    std::cout <<  height(tree);
+    Tree::printTree(tree1);
+    
 
     return 0;
 }

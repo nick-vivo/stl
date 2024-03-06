@@ -1,7 +1,7 @@
 #ifndef __TREE__
 #define __TREE__
 
-#include "src/TreeBinary.cc"
-#include "src/PrintTree.cc"
+#include "src/Tree/TreeBinary.cc"
+#include "src/Tree/PrintTree.cc"
 
 #endif

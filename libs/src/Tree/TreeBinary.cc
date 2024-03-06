@@ -1,14 +1,51 @@
 #ifndef __Tree_Binary_Class__
 #define __Tree_Binary_Class__
 
-#include "Nodes.cc"
+#include "Node.cc"
 #include "Tools.cc"
 #include <initializer_list>
 
+/**
+ * @file src/Tree/TreeBinary.cc, lib - Tree.
+ * 
+ * @brief Бинарное дерево поиска
+ * 
+ * Файл с бинарным деревом поиска и функиями для работы с бинарными
+ * узлами поиска.
+ * 
+ * Используемые стандартные библиотеки:
+ * 1.#incldue <initializer_list>;
+ */
 
+
+/**
+* @brief Содержит функции для работы с 
+* 
+* Функция меняет местами два объекта. Нужно иметь оператор.
+* присваивания и конструктор копирования. Стандартный swap(a, b);
+*
+* Используется рекурсия вида: Значение больше - идём вправо, меньше - идём влево.
+*
+*/
 namespace TreeBinary
 {
 
+    /**
+    * @brief Вставка значения в какой-нибудь узел корня.
+    * 
+    * Функция рекурсивно проходится по узлам и вставляет значение в зависимости
+    * от параметра value.(выделяется память, после надо удалить с помощью функций
+    * очистки)
+    * 
+    * # Рекурсия: Значение больше - идём вправо, меньше - идём влево.
+    * 
+    * @tparam T Тип поля data узлов
+    * 
+    * @param node Корень узла для вставки.
+    * @param value Значение для вставки.
+    * 
+    * @return void.
+    */
     template<class T>
     void insert(Tree::Node<T>*& node, const T &value) noexcept
     {
@@ -21,6 +58,23 @@ namespace TreeBinary
             insert(node->left, value);
     }
 
+    /**
+    * @brief Вставка значений из одного узла в другой.
+    * 
+    * Функция рекурсивно вставляет элементы из nodeFromWhichToCopy в
+    * nodeForInsertion. В результате в узле nodeForInsertion будут
+    * присутствовать значения из nodeFromWhichToCopy.(выделяется память,
+    * после надо удалить с помощью функций очистки)
+    * 
+    * # Рекурсия: Значение больше - идём вправо, меньше - идём влево.
+    *
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param nodeForInsertion Узел для вставки.
+    * @param nodeFromWhichToCopy Значения копирования.
+    * 
+    * @return void.
+    */
     template<class T>
     void insertNodes(Tree::Node<T>*& nodeForInsertion , const Tree::Node<T>* const nodeFromWhichToCopy) noexcept
     {
@@ -34,48 +88,24 @@ namespace TreeBinary
 
     }
 
-    template<class T>
-    void popNodes(Tree::Node<T>*& nodeForDeleteNodes , const Tree::Node<T>* const nodeFromDelete) noexcept
-    {
-        if(!nodeFromDelete)
-            return;
-
-        popNodes(nodeForDeleteNodes, nodeFromDelete->left);
-        popNodes(nodeForDeleteNodes, nodeFromDelete->right);
-
-        removeValueWithoutChangeNodes(nodeForDeleteNodes, nodeFromDelete->data);
-    }
-
-    template<class T>
-    bool nodeInNodes(const Tree::Node<T>* const nodeForSearch, const Tree::Node<T>* const nodeValues)
-    {
-        if(!nodeForSearch || !nodeValues)
-            return true;
-        return valueInNodes(nodeValues, nodeForSearch->data) && nodeInNodes(nodeForSearch->left, nodeValues) && nodeInNodes(nodeForSearch->right, nodeValues);
-
-    }
-
-    template<class T>
-    bool nodesEqualAboutValue(const Tree::Node<T>* const node1, const Tree::Node<T>* const node2)
-    {
-        return nodeInNodes(node1, node2) && nodeInNodes(node2, node1);
-    }
-
-
-
-// Для работы с деревом
-    template<class T>
-    void deleteNodes(Tree::Node<T>*& node) noexcept 
-    {
-        if(node)
-        {
-            deleteNodes(node->left);
-            deleteNodes(node->right);
-            delete node;
-            node = nullptr;
-        }
-    }
-
+    /**
+    * @brief Удаление значения из корня.
+    * 
+    * Функция рекурсивно проходится по элементам и удаляет нужный, меняя
+    * структуру дерева. Не рекомендуется использовать. Лучше использовать
+    * аналог removeChangeNodes(...) для сохранения структуры дерева.(присходит
+    * очистка памяти, удалённые узлы = nullptr)
+    * 
+    * 
+    * # Рекурсия: Значение больше - идём вправо, меньше - идём влево.
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param node Узел для удаления.
+    * @param value Значение которое нужно удалить.
+    * 
+    * @return void.
+    */
     template<class T>
     void removeChangeNodes(Tree::Node<T>*& node, const T &value) noexcept
     {
@@ -120,6 +150,23 @@ namespace TreeBinary
             removeChangeNodes(node->left, value);        
     }
 
+    /**
+    * @brief Удаление значения из корня.
+    * 
+    * Функция рекурсивно проходится по элементам и удаляет нужный, меняя только
+    * два значения в структуре дерева(само значение и максимальное из левого
+    * подузла), то есть структура дерева не страдает.(присходит очистка памяти,
+    * удалённые узлы = nullptr)
+    * 
+    * # Рекурсия: Значение больше - идём вправо, меньше - идём влево.
+    *
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param node Узел для удаления.
+    * @param value Значение которое нужно удалить.
+    * 
+    * @return void.
+    */
     template<class T>
     void removeValueWithoutChangeNodes(Tree::Node<T>*& node, const T &value) noexcept
     {
@@ -169,11 +216,108 @@ namespace TreeBinary
         
     }
 
+    /**
+    * @brief Удаление значений из одного узла, взяв значения из другого.
+    * 
+    * Функция рекурсивно удаляет элементы nodeFromDelete из nodeForDeleteNodes
+    * nodeFromDelete. В результате в узле nodeForInsertion будут присутствовать
+    * значения из nodeFromWhichToCopy. (присходит очистка памяти, удалённые
+    * узлы = nullptr)
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param nodeForDeleteNodes Узел для очистки.
+    * @param nodeFromDelete Узел значений.
+    * 
+    * @return void.
+    */
+    template<class T>
+    void popNodes(Tree::Node<T>*& nodeForDeleteNodes , const Tree::Node<T>* const nodeFromDelete) noexcept
+    {
+        if(!nodeFromDelete)
+            return;
+
+        popNodes(nodeForDeleteNodes, nodeFromDelete->left);
+        popNodes(nodeForDeleteNodes, nodeFromDelete->right);
+
+        removeValueWithoutChangeNodes(nodeForDeleteNodes, nodeFromDelete->data);
+    }
+
+    /**
+    * @brief Содержит ли nodeForSearch все значения из nodeValues.
+    * 
+    * Функция рекурсивно проверяет находятся ли все значения из nodeForSearch
+    * в nodeValues
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param nodeForSearch Проверяемый узел.
+    * @param nodeValues Значения для проверки.
+    * 
+    * @return false - если не все значения в nodeForSearch, и true в противном случае.
+    */
+    template<class T>
+    bool nodeInNodes(const Tree::Node<T>* const nodeForSearch, const Tree::Node<T>* const nodeValues) noexcept
+    {
+        if(!nodeForSearch || !nodeValues)
+            return true;
+        return valueInNodes(nodeValues, nodeForSearch->data) && nodeInNodes(nodeForSearch->left, nodeValues) && nodeInNodes(nodeForSearch->right, nodeValues);
+
+    }
+
+    /**
+    * @brief Равны ли узлы по значениям.
+    * 
+    * Функция рекурсивно проверяет все ли значения из node<1,2>находятся в
+    * node<2,1>.
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param node1 Первый узел.
+    * @param nodeFromWhichToCopy Второй узел проверки.
+    * 
+    * @return true если их значения равны. false если значения разные.
+    */
+    template<class T>
+    bool nodesEqualAboutValue(const Tree::Node<T>* const node1, const Tree::Node<T>* const node2) noexcept
+    {
+        return nodeInNodes(node1, node2) && nodeInNodes(node2, node1);
+    }
+
+    /**
+    * @brief Удаление значений из одного узла, взяв значения из другого.
+    * 
+    * Функция рекурсивно удаляет элементы nodeFromDelete из nodeForDeleteNodes
+    * nodeFromDelete. В результате в узле nodeForInsertion будут присутствовать
+    * значения из nodeFromWhichToCopy. (присходит очистка памяти, удалённые
+    * узлы = nullptr)
+    *
+    * @throw Нету.
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param nodeForDeleteNodes Узел для очистки.
+    * @param nodeFromDelete Узел значений.
+    * 
+    * @return void.
+    */
+    template<class T>
+    void deleteNodes(Tree::Node<T>*& node) noexcept 
+    {
+        if(node)
+        {
+            deleteNodes(node->left);
+            deleteNodes(node->right);
+            delete node;
+            node = nullptr;
+        }
+    }
+
     template<class T>
     Tree::t_count height(const Tree::Node<T>* const node) noexcept 
     {
         if(node)
-            return 1 + Tree::max(height(node->left), height(node->right));
+            return 1 + Tools::max(height(node->left), height(node->right));
         return 0;
 
     }
