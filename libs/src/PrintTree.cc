@@ -2,7 +2,7 @@
 #define __Tree_PrintTree_Class__
 
 #include <iostream>
-#include "BinaryTree.cc"
+#include "TreeBinary.cc"
 #include "Nodes.cc"
 #include "Tools.cc"
 

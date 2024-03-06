@@ -35,13 +35,13 @@ namespace TreeBinary
     }
 
     template<class T>
-    void deleteNodes(Tree::Node<T>*& nodeForDeleteNodes , const Tree::Node<T>* const nodeFromDelete) noexcept
+    void popNodes(Tree::Node<T>*& nodeForDeleteNodes , const Tree::Node<T>* const nodeFromDelete) noexcept
     {
         if(!nodeFromDelete)
             return;
 
-        deleteNodes(nodeForDeleteNodes, nodeFromDelete->left);
-        deleteNodes(nodeForDeleteNodes, nodeFromDelete->right);
+        popNodes(nodeForDeleteNodes, nodeFromDelete->left);
+        popNodes(nodeForDeleteNodes, nodeFromDelete->right);
 
         removeValueWithoutChangeNodes(nodeForDeleteNodes, nodeFromDelete->data);
     }
@@ -65,12 +65,12 @@ namespace TreeBinary
 
 // Для работы с деревом
     template<class T>
-    void popNodes(Tree::Node<T>*& node) noexcept 
+    void deleteNodes(Tree::Node<T>*& node) noexcept 
     {
         if(node)
         {
-            popNodes(node->left);
-            popNodes(node->right);
+            deleteNodes(node->left);
+            deleteNodes(node->right);
             delete node;
             node = nullptr;
         }
@@ -405,7 +405,7 @@ public:
 
     ~Binary()
     {
-        TreeBinary::popNodes(root);        
+        TreeBinary::deleteNodes(root);        
     }
     
     void add(const T &value) noexcept
@@ -473,14 +473,14 @@ public:
 
     Binary<T>& operator=(const Binary<T>& binaryTree) noexcept
     {   
-        TreeBinary::popNodes(this->root);
+        TreeBinary::deleteNodes(this->root);
         TreeBinary::insertNodes(this->root, binaryTree.root);
         return *this;
     }
 
     Binary<T>& operator=(const T& value) noexcept
     {   
-        TreeBinary::popNodes(this->root);
+        TreeBinary::deleteNodes(this->root);
         this->add(value);
         return *this;
     }
@@ -493,7 +493,7 @@ public:
 
     Binary<T>& operator-=(const Binary<T>& binaryTree) noexcept
     {
-        TreeBinary::deleteNodes(root, binaryTree.root);
+        TreeBinary::popNodes(root, binaryTree.root);
         return *this;
     }
 
@@ -522,6 +522,14 @@ public:
         if(!tmp)
             throw "Пуст сетик";
         return tmp->data;
+    }
+
+    //После клонированные узлы надо самостоятельно почистить
+    Tree::Node<T>* cloneNodes()
+    {
+        Tree::Node<T> *clone = nullptr;
+        TreeBinary::insertNodes(clone, this->root);
+        return clone;
     }
 };
 

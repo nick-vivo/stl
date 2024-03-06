@@ -11,10 +11,14 @@ int main()
 
     std::cout << "\n";
 
-    Tree::printTree(tree.root);
+    Tree::Node<int> *ptr = tree.cloneNodes();
+
+    Tree::printTree(ptr);
+
+    TreeBinary::deleteNodes(ptr);
 
     Tree::print(tree);
-    // std::cout <<  heigh  t(tree);
+    std::cout <<  height(tree);
 
     return 0;
 }
