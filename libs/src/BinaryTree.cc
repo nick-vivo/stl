@@ -1,12 +1,12 @@
-#ifndef __Tree_BinaryTree_Class__
-#define __Tree_BinaryTree_Class__
+#ifndef __Tree_Binary_Class__
+#define __Tree_Binary_Class__
 
 #include "Nodes.cc"
 #include "Tools.cc"
 #include <initializer_list>
 
 
-namespace BinaryTree
+namespace TreeBinary
 {
 
     template<class T>
@@ -364,157 +364,160 @@ namespace BinaryTree
         index >= 0 ? count = -1 : count = 0;
         return getNodeByIndexHelper(root, count, index);
     }
+}
 
+namespace Tree
+{
 template<class T>
-class BinaryTree 
+class Binary
 {
 public:
     
     Tree::Node<T> *root;
 
-    BinaryTree(): root(nullptr) {}
+    Binary(): root(nullptr) {}
 
-    BinaryTree(std::initializer_list<T> ls): BinaryTree()
+    Binary(std::initializer_list<T> ls): Binary()
     {
         for(T elem : ls)
             this->add(elem);
     }
 
-    BinaryTree(const T& value): BinaryTree() 
+    Binary(const T& value): Binary() 
     {
         this->root = new Tree::Node<T>(value);
     }
 
-    BinaryTree(const Tree::Node<T>* const node): BinaryTree() 
+    Binary(const Tree::Node<T>* const node): Binary() 
     {
-        insertNodes(root, node);
+        TreeBinary::insertNodes(root, node);
     }
 
-    BinaryTree(const BinaryTree<T>& other): BinaryTree()
+    Binary(const Binary<T>& other): Binary()
     {
-        insertNodes(root, other.root);
+        TreeBinary::insertNodes(root, other.root);
     }
 
-    BinaryTree(BinaryTree<T>&& other): BinaryTree()
+    Binary(Binary<T>&& other): Binary()
     {
         this->swap(other);  
     }
 
-    ~BinaryTree()
+    ~Binary()
     {
-        popNodes(root);        
+        TreeBinary::popNodes(root);        
     }
     
     void add(const T &value) noexcept
     {
-        insert(this->root, value);
+        TreeBinary::insert(this->root, value);
     }
     
     void discard(const T &value) noexcept
     {
-        removeValueWithoutChangeNodes(this->root, value);
+        TreeBinary::removeValueWithoutChangeNodes(this->root, value);
     }
 
     Tree::t_count elevation() const noexcept
     {
-        return height(this->root);
+        return TreeBinary::height(this->root);
     }
 
     Tree::t_count size() const noexcept
     {
-        return len(this->root);
+        return TreeBinary::len(this->root);
     }
 
     bool in(const T &value) const noexcept
     {
-        return valueInNodes(this->root, value);
+        return TreeBinary::valueInNodes(this->root, value);
     }
 
 
 //Балансировка дерева
     void balance() noexcept
     {
-        balanceToAVL(this->root);
+        TreeBinary::balanceToAVL(this->root);
     }
 
     bool isBalanced() const noexcept
     {
-        return isBalanced(this->root);
+        return TreeBinary::isBalanced(this->root);
     }
 
 
 //Основной функционал закончился.
-    void swap(BinaryTree<T> binaryTree) noexcept
+    void swap(Binary<T> binaryTree) noexcept
     {
         Tools::swap(this->root, binaryTree.root);
     }
 
-    BinaryTree<T>& operator+=(const T& value) noexcept
+    Binary<T>& operator+=(const T& value) noexcept
     {
         this->add(value);
         return *this;
     }
 
-    BinaryTree<T>& operator+=(const BinaryTree<T>& binaryTree) noexcept
+    Binary<T>& operator+=(const Binary<T>& binaryTree) noexcept
     {
-        insertNodes(root, binaryTree.root);
+        TreeBinary::insertNodes(root, binaryTree.root);
         return *this;
     }
 
-    BinaryTree<T>& operator+=(std::initializer_list<T> ls) noexcept
+    Binary<T>& operator+=(std::initializer_list<T> ls) noexcept
     {
         for(T elem : ls)
             this->add(elem);
         return *this;
     }
 
-    BinaryTree<T>& operator=(const BinaryTree<T>& binaryTree) noexcept
+    Binary<T>& operator=(const Binary<T>& binaryTree) noexcept
     {   
-        popNodes(this->root);
-        insertNodes(this->root, binaryTree.root);
+        TreeBinary::popNodes(this->root);
+        TreeBinary::insertNodes(this->root, binaryTree.root);
         return *this;
     }
 
-    BinaryTree<T>& operator=(const T& value) noexcept
+    Binary<T>& operator=(const T& value) noexcept
     {   
-        popNodes(this->root);
+        TreeBinary::popNodes(this->root);
         this->add(value);
         return *this;
     }
 
-    BinaryTree<T>& operator-=(const T& value) noexcept
+    Binary<T>& operator-=(const T& value) noexcept
     {
         this->discard(value);
         return *this;
     }
 
-    BinaryTree<T>& operator-=(const BinaryTree<T>& binaryTree) noexcept
+    Binary<T>& operator-=(const Binary<T>& binaryTree) noexcept
     {
-        deleteNodes(root, binaryTree.root);
+        TreeBinary::deleteNodes(root, binaryTree.root);
         return *this;
     }
 
-    BinaryTree<T>& operator-=(std::initializer_list<T> ls) noexcept
+    Binary<T>& operator-=(std::initializer_list<T> ls) noexcept
     {
         for(T elem : ls)
             this->discard(elem);
         return *this;
     }
 
-    bool operator==(const BinaryTree<T>& binaryTree) noexcept
+    bool operator==(const Binary<T>& binaryTree) noexcept
     {
-        return nodesEqualAboutValue(binaryTree.root, this->root);
+        return TreeBinary::nodesEqualAboutValue(binaryTree.root, this->root);
     }
 
-    bool operator!=(const BinaryTree<T>& binaryTree) noexcept
+    bool operator!=(const Binary<T>& binaryTree) noexcept
     {
-        return !nodesEqualAboutValue(binaryTree.root, this->root);
+        return !TreeBinary::nodesEqualAboutValue(binaryTree.root, this->root);
     }
 
 
     T operator[](Tree::t_index index)
     {
-        Tree::Node<T> *tmp = getNodeByMinValues(root, index);
+        Tree::Node<T> *tmp = TreeBinary::getNodeByMinValues(root, index);
 
         if(!tmp)
             throw "Пуст сетик";
@@ -523,38 +526,38 @@ public:
 };
 
 template<class T>
-Tree::t_count height(const BinaryTree<T>& binaryTree) noexcept 
+Tree::t_count height(const Binary<T>& binaryTree) noexcept 
 {
     return binaryTree.elevation();
 }
 
 template<class T>
-Tree::t_count len(const BinaryTree<T>& binaryTree) noexcept
+Tree::t_count len(const Binary<T>& binaryTree) noexcept
 {
     return binaryTree.size();
 }
 
 
 template<class T>
-BinaryTree<T> operator+(const BinaryTree<T>& binaryTree, const T& value) noexcept
+Binary<T> operator+(const Binary<T>& binaryTree, const T& value) noexcept
 {
-    BinaryTree<T> sum(binaryTree);
+    Binary<T> sum(binaryTree);
     sum.add(value);
     return sum;
 }
 
 template<class T>
-BinaryTree<T> operator+(const T& value, const BinaryTree<T>& binaryTree) noexcept
+Binary<T> operator+(const T& value, const Binary<T>& binaryTree) noexcept
 {
-    BinaryTree<T> sum(binaryTree);
+    Binary<T> sum(binaryTree);
     sum.add(value);
     return sum;
 }
 
 template<class T>
-BinaryTree<T> operator+(const BinaryTree<T>& binaryTree1, const BinaryTree<T>& binaryTree2) noexcept
+Binary<T> operator+(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) noexcept
 {
-    BinaryTree<T> sum(binaryTree1);
+    Binary<T> sum(binaryTree1);
     sum += binaryTree1;
     sum += binaryTree2;
     sum.balance();
@@ -562,17 +565,17 @@ BinaryTree<T> operator+(const BinaryTree<T>& binaryTree1, const BinaryTree<T>& b
 }
 
 template<class T>
-BinaryTree<T> operator-(const BinaryTree<T>& binaryTree, const T& value) noexcept
+Binary<T> operator-(const Binary<T>& binaryTree, const T& value) noexcept
 {
-    BinaryTree<T> sum(binaryTree);
+    Binary<T> sum(binaryTree);
     sum.discard(value);
     return sum;
 }
 
 template<class T>
-BinaryTree<T> operator-(const BinaryTree<T>& binaryTree1, const BinaryTree<T>& binaryTree2) noexcept
+Binary<T> operator-(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) noexcept
 {
-    BinaryTree<T> sum(binaryTree1);
+    Binary<T> sum(binaryTree1);
     sum -= binaryTree2;
     sum.balance();
     return sum;

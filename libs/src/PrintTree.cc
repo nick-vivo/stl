@@ -53,34 +53,27 @@ namespace Tree
         return stream;
     }
 
-}
-
-namespace BinaryTree
-{
-
-template<class T>
-std::ostream& print(BinaryTree<T>& tree, std::ostream& stream = std::cout) 
-{
-    
-    stream << "Set: {";
-    Tree::t_index size = len(tree);
-
-    if(size > 0)
+    template<class T>
+    std::ostream& print(Tree::Binary<T>& tree, std::ostream& stream = std::cout) 
     {
-        for(Tree::t_index i = 0; i < size; ++i)
+
+        stream << "Set: {";
+        Tree::t_index size = len(tree);
+
+        if(size > 0)
         {
-            stream << tree[i];
-            if(i < size - 1)
-                stream << ", ";
+            for(Tree::t_index i = 0; i < size; ++i)
+            {
+                stream << tree[i];
+                if(i < size - 1)
+                    stream << ", ";
+            }
         }
+
+        stream << "};";
+
+        return stream;
     }
-
-    stream << "};";
-
-    return stream;
 }
-
-}
-
 
 #endif

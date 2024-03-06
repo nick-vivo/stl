@@ -4,7 +4,7 @@
 
 int main() 
 {   
-    BinaryTree::BinaryTree<int> tree = {1, 2, 3, 4, 5, 6, 7};
+    Tree::Binary<int> tree = {1, 2, 3, 4, 5, 6, 7};
     
     tree.balance();
 
@@ -13,7 +13,7 @@ int main()
 
     Tree::printTree(tree.root);
 
-    BinaryTree::print(tree);
+    Tree::print(tree);
     // std::cout <<  heigh  t(tree);
 
     return 0;
