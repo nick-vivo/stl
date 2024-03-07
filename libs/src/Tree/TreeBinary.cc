@@ -961,7 +961,7 @@ public:
     * 
     * @return Количество значений в узле.
     */
-    Tree::t_count size() const noexcTimeept
+    Tree::t_count size() const noexcept
     {
         return TreeBinary::len(this->root);
     }
