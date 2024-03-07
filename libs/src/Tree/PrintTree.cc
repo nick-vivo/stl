@@ -25,7 +25,6 @@
  */
 namespace Tree
 {
-    
     /**
     * @brief Выводит в поток корень дерева узлов node.
     * 
@@ -178,6 +177,25 @@ namespace Tree
         return stream;
     }
 
+    /**
+    * @brief Выводит в поток значение;
+    * 
+    * Функция выводит в поток данные. Нужна для удобства после python.
+    * # Используется рекурсия вида: сначала левые значения, потом правые.
+    * 
+    * @tparam T тип данных.
+    * 
+    * @param value значение для вывода
+    * @param stream Поток вывода из библиотеки iostream. По умолчанию std::cout.
+    * 
+    * @return Возвращает поток stream(по умолчанию std::cout).
+    */
+    template<class T>
+    std::ostream& print(const T& value, std::ostream& stream = std::cout) noexcept
+    {
+        stream << value;
+        return stream;
+    }
 }
 
 #endif

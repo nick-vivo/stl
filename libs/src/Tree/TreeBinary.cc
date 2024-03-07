@@ -44,18 +44,23 @@ namespace TreeBinary
     * @param node Корень узла для вставки.
     * @param value Значение для вставки.
     * 
-    * @return void.
+    * @return true, если значение было добавлено в узел, false в противном случае
     */
     template<class T>
-    void insert(Tree::Node<T>*& node, const T &value) noexcept
+    bool insert(Tree::Node<T>*& node, const T &value) noexcept
     {
         if(!node)
+        {
             node = new Tree::Node<T>(value);
+            return true;
+        }
 
+        bool flag = false;
         if(node->data < value)
-            insert(node->right, value);
+            flag = insert(node->right, value);
         else if(node->data > value)
-            insert(node->left, value);
+            flag = insert(node->left, value);
+        return flag;
     }
 
     /**
@@ -167,13 +172,14 @@ namespace TreeBinary
     * @param node Узел для удаления.
     * @param value Значение которое нужно удалить.
     * 
-    * @return void.
+    * @return true, если значения было удалено. false в противном случае.
     */
     template<class T>
-    void removeValueWithoutChangeNodes(Tree::Node<T>*& node, const T &value) noexcept
+    bool removeValueWithoutChangeNodes(Tree::Node<T>*& node, const T &value) noexcept
     {
+        bool flag;
         if(!node)
-            return;
+            return false;
         else if(node->data == value)
         {   
             if(!node->left)
@@ -208,13 +214,15 @@ namespace TreeBinary
                     prev->right = nullptr;
                 else
                     prev->left = nullptr;
-                
             }
+            return true;
         }
         else if(node->data < value)
-            removeValueWithoutChangeNodes(node->right, value);
+            flag = removeValueWithoutChangeNodes(node->right, value);
         else if(node->data > value)
-            removeValueWithoutChangeNodes(node->left, value);
+            flag = removeValueWithoutChangeNodes(node->left, value);
+
+        return flag;
         
     }
 
@@ -791,6 +799,7 @@ class Binary
 {
 private:
     Tree::Node<T> *root;
+    Tree::t_count length;
 
 public:
 
@@ -801,7 +810,7 @@ public:
      * 
      * @tparam T тип значений дерева.
      */
-    Binary(): root(nullptr) {}
+    Binary(): root(nullptr), length(0) {}
 
     /**
      * @brief Конструктор принимающий контейнер вида <int>{1, 2, 3};
@@ -829,10 +838,7 @@ public:
      * 
      * @param value : T
      */
-    Binary(const T& value): Binary() 
-    {
-        this->root = new Tree::Node<T>(value);
-    }
+    Binary(const T& value): root(new Tree::Node<T>(value)), length(1) {}
 
     /**
      * @brief Конструктор принимающий узел из класса Tree::Node<T>.
@@ -845,7 +851,7 @@ public:
      * 
      * @param node узел значений.
      */
-    Binary(const Tree::Node<T>* const node): Binary() 
+    Binary(const Tree::Node<T>* const node): root(nullptr), length(TreeBinary::len(node))
     {
         TreeBinary::insertNodes(root, node);
     }
@@ -860,10 +866,7 @@ public:
      * 
      * @param other дерево значения для копирования.
      */
-    Binary(const Binary<T>& other): Binary()
-    {
-        TreeBinary::insertNodes(root, other.root);
-    }
+    Binary(const Binary<T>& other): Binary(other.root) {}
 
     /**
      * @brief Конструктор перемещения.
@@ -887,7 +890,8 @@ public:
      */
     ~Binary()
     {
-        TreeBinary::deleteNodes(root);        
+        TreeBinary::deleteNodes(root);
+        this->length = 0;   
     }
     
         /**
@@ -899,7 +903,8 @@ public:
      */
     void clear()
     {
-        TreeBinary::deleteNodes(root);        
+        TreeBinary::deleteNodes(root);
+        this->length = 0;    
     }
 
     /**
@@ -912,11 +917,16 @@ public:
     * 
     * @param value Значение для вставки.
     *
-    * @return void.
+    * @return true, если значение было добавлено в дерево. false в противном случае
     */
-    void add(const T &value) noexcept
+    bool add(const T &value) noexcept
     {
-        TreeBinary::insert(this->root, value);
+        bool flag = TreeBinary::insert(this->root, value);
+        if(flag)
+        {
+            ++this->length;
+        }
+        return flag;
     }
     
     /**
@@ -931,11 +941,16 @@ public:
     * 
     * @param value Значение которое нужно удалить.
     * 
-    * @return void.
+    * @return true, если значение было удалено, false, если его не было в дереве.
     */
-    void discard(const T &value) noexcept
+    bool discard(const T &value) noexcept
     {
-        TreeBinary::removeValueWithoutChangeNodes(this->root, value);
+        bool flag = TreeBinary::removeValueWithoutChangeNodes(this->root, value);
+        if(flag)
+        {
+            --this->length;
+        }
+        return flag;
     }
 
     /**
@@ -963,7 +978,7 @@ public:
     */
     Tree::t_count size() const noexcept
     {
-        return TreeBinary::len(this->root);
+        return this->length;
     }
 
     /**
@@ -1071,6 +1086,7 @@ public:
     Binary<T>& operator+=(const Binary<T>& binaryTree) noexcept
     {
         TreeBinary::insertNodes(root, binaryTree.root);
+        length = TreeBinary::len(this->root);
         return *this;
     }
 
@@ -1085,6 +1101,7 @@ public:
     {   
         TreeBinary::deleteNodes(this->root);
         TreeBinary::insertNodes(this->root, binaryTree.root);
+        length = binaryTree.size();
         return *this;
     }
 
@@ -1137,6 +1154,7 @@ public:
     Binary<T>& operator-=(const Binary<T>& binaryTree) noexcept
     {
         TreeBinary::popNodes(root, binaryTree.root);
+        length = TreeBinary::len(this->root);
         return *this;
     }
 
@@ -1213,9 +1231,8 @@ public:
     Binary<T> interSection(const Binary<T>& binaryTree) const noexcept
     {
         Binary<T> tmp;
-
         TreeBinary::intersectionHelper(this->root, binaryTree.root, tmp.root);
-        
+        tmp.length = TreeBinary::len(tmp.root);
         return tmp;
     }
 };
@@ -1318,7 +1335,6 @@ template<class T>
 Binary<T> operator+(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) noexcept
 {
     Binary<T> sum(binaryTree1);
-    sum += binaryTree1;
     sum += binaryTree2;
     sum.balance();
     return sum;
@@ -1334,7 +1350,9 @@ Binary<T> operator+(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) 
 * 
 * # Рекурсия: Значение больше - идём вправо, меньше - идём влево.
 * 
-* @param value Значение для вставки.
+* @param value Значениint operator()(int a, int b) {
+        return a + b;
+    }е для вставки.
 * @param binaryTree дерево для копирования
 * 
 * @return Новое дерево.
@@ -1372,9 +1390,9 @@ Binary<T> operator-(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) 
 
 /**
 * @brief Возврат дерева, содержащее пересечение обоих деревьев
-
+*
 * Рекомендуется binaryTree1 указывать дерево меньшего размера, алгоритм отработает быстрее.
-
+*
 * @tparam T Тип поля data узлов.
 * 
 * @param binaryTree1 первое дерево
@@ -1389,5 +1407,6 @@ Binary<T> intersection(const Binary<T>& binaryTree1, const Binary<T>& binaryTree
 }
 
 }
+
 
 #endif
