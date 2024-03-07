@@ -890,6 +890,18 @@ public:
         TreeBinary::deleteNodes(root);        
     }
     
+        /**
+     * @brief Очистка памяти от дерева.
+     * 
+     * Очищает память от дерева рекурсивным методом(см. функцию TreeBinary::deleteNodes).
+     * 
+     * @return void
+     */
+    void clear()
+    {
+        TreeBinary::deleteNodes(root);        
+    }
+
     /**
     * @brief Добавление значения в дерево.
     * 
@@ -900,7 +912,7 @@ public:
     * 
     * @param value Значение для вставки.
     *
-    *  @return void.
+    * @return void.
     */
     void add(const T &value) noexcept
     {
@@ -949,7 +961,7 @@ public:
     * 
     * @return Количество значений в узле.
     */
-    Tree::t_count size() const noexcept
+    Tree::t_count size() const noexcTimeept
     {
         return TreeBinary::len(this->root);
     }
