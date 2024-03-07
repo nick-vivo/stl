@@ -707,6 +707,60 @@ namespace TreeBinary
         index >= 0 ? count = -1 : count = 0;
         return getNodeByIndexHelper(root, count, index);
     }
+
+    /**
+    * @brief Вставка в узел nodeForInterSection значения, содержащихся в node1 и
+    * в node2.
+    * 
+    * Рекомендуется node1 указывать узел меньшего размера, алгоритм отработает быстрее.
+    * 
+    * После отработки в узел добавятся новые значения. Надо учитывать при очистке памяти
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param node1 Первый узел(меньшего размера, желательно).
+    * @param node2 Второй узел(большего размера, желательно).
+    * @param nodeForInterSection Узел для вставки.
+    * 
+    * @return указатель на узел. 
+    */
+    template<class T>
+    void intersectionHelper(const Tree::Node<T>* const node1, const Tree::Node<T>* const node2, Tree::Node<T>*& nodeForInterSection)
+    {
+
+        if(node1 && valueInNodes(node2, node1->data))
+            insert(nodeForInterSection, node1->data);
+        if(node1->left)
+            intersectionHelper(node1->left, node2, nodeForInterSection);
+        if(node1->right)
+            intersectionHelper(node1->right, node2, nodeForInterSection);
+        
+        
+    }
+
+    /**
+    * @brief Вставка в узел nodeForInterSection значения, содержащихся в node1 и
+    * в node2.
+    * 
+    * Рекомендуется node1 указывать узел меньшего размера, алгоритм отработает быстрее.
+    * 
+    * После отработки узел надо удалить с помощью функции deleteNodes, так как для него
+    * выделялась память
+    * 
+    * @tparam T Тип поля data узлов.
+    * 
+    * @param node1 Первый узел(меньшего размера, желательно).
+    * @param node2 Второй узел(большего размера, желательно).
+    * 
+    * @return указатель новый узел. 
+    */
+    template<class T>
+    Tree::Node<T>* intersection(const Tree::Node<T>* const node1, const Tree::Node<T>* const node2)
+    {
+        Tree::Node<T>* interSection = nullptr;
+        TreeBinary::intersectionHelper(node1, node2, interSection);
+        return interSection;
+    }
 }
 
 /**
@@ -1136,6 +1190,22 @@ public:
         TreeBinary::insertNodes(clone, this->root);
         return clone;
     }
+
+    /**
+    * @brief Получение нового дерева содержащего значения находящихся в обоих деревьях.
+    * 
+    * @param binaryTree дерево.
+    * 
+    * @return Новое дерево, содержащее значения из обоих деревьях. 
+    */
+    Binary<T> interSection(const Binary<T>& binaryTree) const noexcept
+    {
+        Binary<T> tmp;
+
+        TreeBinary::intersectionHelper(this->root, binaryTree.root, tmp.root);
+        
+        return tmp;
+    }
 };
 
 /**
@@ -1286,6 +1356,24 @@ Binary<T> operator-(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) 
     sum -= binaryTree2;
     sum.balance();
     return sum;
+}
+
+/**
+* @brief Возврат дерева, содержащее пересечение обоих деревьев
+
+* Рекомендуется binaryTree1 указывать дерево меньшего размера, алгоритм отработает быстрее.
+
+* @tparam T Тип поля data узлов.
+* 
+* @param binaryTree1 первое дерево
+* @param binaryTree2 второе дерево
+* 
+* @return результирующее дерево 
+*/
+template<class T>
+Binary<T> intersection(const Binary<T>& binaryTree1, const Binary<T>& binaryTree2) noexcept
+{
+    return binaryTree1.interSection(binaryTree2);
 }
 
 }
